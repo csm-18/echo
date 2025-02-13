@@ -2,5 +2,7 @@ pub mod lexer;
 
 pub fn compile(code: &str) {
     println!("Compiling...");
-    lexer::lexer(code);
+    let tokens = lexer::lexer(code);
+    println!("tokens: \n {:?}", tokens);
+
 }

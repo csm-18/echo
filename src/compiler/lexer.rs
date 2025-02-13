@@ -2,7 +2,7 @@
 
 use std::process::exit;
 
-pub fn lexer(code: &str) {
+pub fn lexer(code: &str) -> Vec<Token> {
     let mut tokens: Vec<Token> = Vec::new();
 
     let mut x = 0;
@@ -103,14 +103,22 @@ pub fn lexer(code: &str) {
             // ignore whitespace
             x += 1;
             continue;
+        }else {
+            let (line_number, char_at) = char_position(x, code);
+            println!(
+                "Error[{line_number},{char_at}]: Invalid token on line {} at {}",
+                line_number, char_at
+            );
+            exit(1);
         }
         x += 1;
     }
-    println!("tokens: \n {:?}", tokens);
+    
+    tokens
 }
 
 #[derive(Debug)]
-enum TokenType {
+pub enum TokenType {
     Echo(),       // echo function
     LeftParen(),  // left parenthesis
     RightParen(), // right parenthesis
@@ -120,7 +128,7 @@ enum TokenType {
 }
 
 #[derive(Debug)]
-struct Token {
+pub struct Token {
     token_type: TokenType,
     value: String,
     index: usize,
