@@ -1,6 +1,7 @@
 use std::io::Read;
 use std::{path::Path, process::exit};
 use std::fs::File;
+
 // echo version
 const VERSION:&str = "1.0.0";
 fn main() {
@@ -20,21 +21,26 @@ fn main() {
             println!("Invalid source file!");
             exit(1);
         }
-
-        // source file path
-        let source_file_path = Path::new(filename);
-        
-        // open file
-        let mut source_file = match File::open(source_file_path){
-            Err(_err) => {println!("Unable to open '{filename}'");exit(1)},
-            Ok(file) => file,
-        };
-
-        // read file
-        let mut code = String::new();
-        if let Err(_err) = source_file.read_to_string(&mut code) {println!("Unable to read '{filename}'");exit(1);}
+        let code = read(filename);
         println!("{code}");
+        
     }else {
         println!("Too many arguments!");
     }
+}
+
+fn read(filename: &str)-> String {
+    // source file path
+    let source_file_path = Path::new(filename);
+            
+    // open file
+    let mut source_file = match File::open(source_file_path){
+        Err(_err) => {println!("Unable to open '{filename}'");exit(1)},
+        Ok(file) => file,
+    };
+
+    // read file
+    let mut code = String::new();
+    if let Err(_err) = source_file.read_to_string(&mut code) {println!("Unable to read '{filename}'");exit(1);}
+    code
 }
