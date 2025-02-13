@@ -99,6 +99,10 @@ pub fn lexer(code: &str) {
                 );
                 exit(1);
             }
+        } else if &code[x..x + 1] == " " {
+            // ignore whitespace
+            x += 1;
+            continue;
         }
         x += 1;
     }
