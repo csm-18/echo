@@ -1,6 +1,6 @@
 pub mod lexer;
 
-pub fn compile(code: String){
+pub fn compile(code: &str){
     println!("Compiling...");
-    println!("{code}");
+    lexer::lexer(code);
 }

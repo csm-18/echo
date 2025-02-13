@@ -28,7 +28,7 @@ fn main() {
         let code = read(filename);
         
         // compile code
-        compiler::compile(code);
+        compiler::compile(&code);
         
     }else {
         println!("Too many arguments!");
