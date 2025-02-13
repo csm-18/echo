@@ -4,7 +4,33 @@
 pub fn lexer(code: &str) {
     let mut tokens: Vec<Token> = Vec::new();
 
-    
+    let mut x = 0;
+    while x < code.len() {
+        if &code[x..x+1] == "#" {
+            // ignore comments and get newline(if present)
+            let mut found_newline = false;
+            let mut y = x;
+            while y < code.len() {
+                if &code[y..y+1] == "\n" {
+                    found_newline = true;
+                    break;
+                }
+                y += 1;
+            }
+            if found_newline {
+                let temp = Token{
+                    token_type: TokenType::NewLine(),
+                    value: String::from("\n"),
+                    index: y,
+                };
+                tokens.push(temp);
+                x = y;
+            }else {
+                break;
+            }
+        }
+        x += 1;
+    }
     println!("tokens: \n {:?}", tokens);
 }
 
