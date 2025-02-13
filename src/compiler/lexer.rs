@@ -76,6 +76,29 @@ pub fn lexer(code: &str) {
                 );
                 exit(1);
             }
+        } else if is_alpha_numeric(&code[x..x + 1]) {
+            let mut temp = String::new();
+            let mut y = x;
+            while y < code.len() && is_alpha_numeric(&code[y..y + 1]) {
+                temp.push_str(&code[y..y + 1]);
+                y += 1;
+            }
+
+            if temp.contains("echo") {
+                tokens.push(Token {
+                    token_type: TokenType::Echo(),
+                    value: "echo".to_string(),
+                    index: x,
+                });
+                x = y - 1;
+            } else {
+                let (line_number, char_at) = char_position(x, code);
+                println!(
+                    "Error[{line_number},{char_at}]: Invalid token on line {} at {}",
+                    line_number, char_at
+                );
+                exit(1);
+            }
         }
         x += 1;
     }
@@ -115,4 +138,9 @@ fn char_position(char_index: usize, code: &str) -> (usize, usize) {
     let char_position_in_line = char_index - previous_newline_index;
 
     (line_number, char_position_in_line)
+}
+
+// check if a string is alphanumeric
+fn is_alpha_numeric(s: &str) -> bool {
+    s.chars().all(|c| c.is_alphanumeric())
 }
