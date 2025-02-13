@@ -1,5 +1,7 @@
 // Lexical Analysis
 
+use std::process::exit;
+
 pub fn lexer(code: &str) {
     let mut tokens: Vec<Token> = Vec::new();
 
@@ -45,6 +47,35 @@ pub fn lexer(code: &str) {
                 value: "\n".to_string(),
                 index: x,
             });
+        } else if &code[x..x + 1] == "\"" {
+            //get string literal
+
+            let mut closing_quote = false;
+            let mut temp = String::from("\"");
+            let mut y = x + 1;
+            while y < code.len() {
+                temp.push_str(&code[y..y + 1]);
+                if &code[y..y + 1] == "\"" {
+                    closing_quote = true;
+                    break;
+                }
+                y += 1;
+            }
+            if closing_quote {
+                tokens.push(Token {
+                    token_type: TokenType::String(),
+                    value: temp,
+                    index: x,
+                });
+                x = y;
+            } else {
+                let (line_number, char_at) = char_position(x, code);
+                println!(
+                    "Error[{line_number},{char_at}]: Expected closing quote(\") on line {} at {}",
+                    line_number, char_at
+                );
+                exit(1);
+            }
         }
         x += 1;
     }
@@ -66,4 +97,22 @@ struct Token {
     token_type: TokenType,
     value: String,
     index: usize,
+}
+
+// get position of a char in a string
+fn char_position(char_index: usize, code: &str) -> (usize, usize) {
+    let mut line_number = 1;
+    let mut previous_newline_index = 0;
+
+    let mut x = 0;
+    while x < code.len() {
+        if &code[x..x + 1] == "\n" {
+            previous_newline_index = x;
+            line_number += 1;
+        }
+        x += 1;
+    }
+    let char_position_in_line = char_index - previous_newline_index;
+
+    (line_number, char_position_in_line)
 }
