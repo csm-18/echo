@@ -1,6 +1,7 @@
 use std::io::Read;
 use std::{path::Path, process::exit};
 use std::fs::File;
+mod compiler;
 
 // echo version
 const VERSION:&str = "1.0.0";
@@ -16,13 +17,18 @@ fn main() {
         println!(" echo <filename.echo>");
     }else if args.len() == 1 {
         let filename = &args[0];
+        
         // check filename extension
         if filename.len() < 6 || &filename[filename.len()-5..] != ".echo" {
             println!("Invalid source file!");
             exit(1);
         }
+        
+        // read file
         let code = read(filename);
-        println!("{code}");
+        
+        // compile code
+        compiler::compile(code);
         
     }else {
         println!("Too many arguments!");
