@@ -103,7 +103,7 @@ pub fn lexer(code: &str) -> Vec<Token> {
             // ignore whitespace
             x += 1;
             continue;
-        }else {
+        } else {
             let (line_number, char_at) = char_position(x, code);
             println!(
                 "Error[{line_number},{char_at}]: Invalid token on line {} at {}",
@@ -113,11 +113,16 @@ pub fn lexer(code: &str) -> Vec<Token> {
         }
         x += 1;
     }
-    
+    tokens.push(Token {
+        token_type: TokenType::EoF(),
+        value: String::from("eof"),
+        index: code.len(),
+    });
+
     tokens
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum TokenType {
     Echo(),       // echo function
     LeftParen(),  // left parenthesis
@@ -129,13 +134,13 @@ pub enum TokenType {
 
 #[derive(Debug)]
 pub struct Token {
-    token_type: TokenType,
-    value: String,
-    index: usize,
+    pub token_type: TokenType,
+    pub value: String,
+    pub index: usize,
 }
 
 // get position of a char in a string
-fn char_position(char_index: usize, code: &str) -> (usize, usize) {
+pub fn char_position(char_index: usize, code: &str) -> (usize, usize) {
     let mut line_number = 1;
     let mut previous_newline_index = 0;
 

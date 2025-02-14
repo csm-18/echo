@@ -1,8 +1,8 @@
 pub mod lexer;
-
+pub mod parser;
 pub fn compile(code: &str) {
     println!("Compiling...");
     let tokens = lexer::lexer(code);
-    println!("tokens: \n {:?}", tokens);
-
+    let ir = parser::parser(tokens, code);
+    println!("{:?}", ir);
 }
